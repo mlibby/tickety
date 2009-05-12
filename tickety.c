@@ -25,6 +25,7 @@ tickety_current_task_start(tickety *self)
     gtk_button_set_label(GTK_BUTTON(self->timer_button), "Stop");
     gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_STOP_IMAGE);
     gtk_label_set_text(GTK_LABEL(self->message), "Timer started");
+    gtk_widget_grab_focus(self->timer_button);
 }
 
 void 
@@ -48,6 +49,7 @@ tickety_current_task_stop(tickety *self)
     gtk_button_set_label(GTK_BUTTON(self->timer_button), "Start");
     gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_PLAY_IMAGE);
     gtk_label_set_text(GTK_LABEL(self->message), "Timer stopped");
+    gtk_widget_grab_focus(self->task_entry);
 }
 
 void
