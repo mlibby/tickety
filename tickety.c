@@ -1,6 +1,56 @@
 #include "tickety.h"
 
 void
+tickety_current_task_new(tickety *self)
+{
+    GtkWidget *task_box;
+
+    self->task_frame = gtk_frame_new("I'm working on:");
+    gtk_frame_set_label_align(GTK_FRAME(self->task_frame), 0.5, 0.5);
+    self->task_entry = gtk_entry_new_with_max_length(TICKETY_TASK_NAME_MAX_CHARS);
+
+    task_box = gtk_hbox_new(FALSE, 0);
+    gtk_container_set_border_width(GTK_CONTAINER(task_box), 10);
+
+    g_signal_connect(G_OBJECT(self->task_entry), "activate", G_CALLBACK(tickety_current_task_start_callback), self);
+    
+    gtk_box_pack_start(GTK_BOX(task_box), self->task_entry, TRUE, TRUE, 5);
+    gtk_container_add(GTK_CONTAINER(self->task_frame), task_box);
+}
+
+void
+tickety_current_task_start(tickety *self)
+{
+    time(&(self->start_time));
+    gtk_button_set_label(GTK_BUTTON(self->timer_button), "Stop");
+    gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_STOP_IMAGE);
+    gtk_label_set_text(GTK_LABEL(self->message), "Timer started");
+}
+
+void 
+tickety_current_task_start_callback(GtkWidget *widget, gpointer data)
+{
+    tickety *self;
+    self = (tickety *)data;
+    tickety_current_task_start(self);
+}
+
+void
+tickety_current_task_stop(tickety *self)
+{
+    gchar elapsed[25];
+    tickety_format_elapsed_time(elapsed, self->start_time);
+    printf("task '%s' completed in %s\n",
+	   gtk_entry_get_text(GTK_ENTRY(self->task_entry)),
+	   elapsed);
+    
+    self->start_time = TIME_ZERO;
+    gtk_button_set_label(GTK_BUTTON(self->timer_button), "Start");
+    gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_PLAY_IMAGE);
+    gtk_label_set_text(GTK_LABEL(self->message), "Timer stopped");
+}
+
+void
 tickety_format_elapsed_time(gchar *elapsed, time_t start_time)
 {
     time_t now;
@@ -13,30 +63,6 @@ tickety_format_elapsed_time(gchar *elapsed, time_t start_time)
     minutes = (time_diff - hours * 3600) / 60;
     seconds = time_diff - hours * 3600 - minutes * 60;
     sprintf(elapsed, "%02d:%02d:%02d", hours, minutes, seconds);
-}
-
-void
-tickety_current_task_new(tickety *self)
-{
-    GtkWidget *task_box;
-
-    self->task_frame = gtk_frame_new("I'm working on:");
-    gtk_frame_set_label_align(GTK_FRAME(self->task_frame), 0.5, 0.5);
-    task_box = gtk_hbox_new(FALSE, 0);
-    gtk_container_set_border_width(GTK_CONTAINER(task_box), 10);
-    self->task_entry = gtk_entry_new_with_max_length(TICKETY_TASK_NAME_MAX_CHARS);
-    gtk_box_pack_start(GTK_BOX(task_box), self->task_entry, TRUE, TRUE, 5);
-    gtk_container_add(GTK_CONTAINER(self->task_frame), task_box);
-}
-
-void
-tickety_current_task_stop(tickety *self)
-{
-    gchar elapsed[25];
-    tickety_format_elapsed_time(elapsed, self->start_time);
-    printf("task '%s' complete in %s\n",
-	   gtk_entry_get_text(GTK_ENTRY(self->task_entry)),
-	   elapsed);
 }
 
 void 
@@ -85,21 +111,13 @@ tickety_timer_button_click(GtkWidget *widget, gpointer data)
 {
     tickety *self;
     self = (tickety *)data;
-
     if(TIME_ZERO == self->start_time)
     {
-	time(&(self->start_time));
-	gtk_button_set_label(GTK_BUTTON(self->timer_button), "Stop");
-	gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_STOP_IMAGE);
-	gtk_label_set_text(GTK_LABEL(self->message), "Timer started");
+	tickety_current_task_start(self);
     }
     else
     {
 	tickety_current_task_stop(self);
-	self->start_time = TIME_ZERO;
-	gtk_button_set_label(GTK_BUTTON(self->timer_button), "Start");
-	gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_PLAY_IMAGE);
-	gtk_label_set_text(GTK_LABEL(self->message), "Timer stopped");
     }
 }
 

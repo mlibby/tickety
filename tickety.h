@@ -21,4 +21,37 @@ struct _tickety {
 };
 typedef struct _tickety tickety;
 
+void
+tickety_current_task_new(tickety *self);
+
+void
+tickety_current_task_start(tickety *self);
+
+void
+tickety_current_task_start_callback(GtkWidget *widget, gpointer data);
+
+void
+tickety_current_task_stop(tickety *self);
+
+void
+tickety_format_elapsed_time(gchar *elapsed, time_t start_time);
+
+void 
+tickety_main_window_destroy(GtkWidget *widget, gpointer data);
+
+void 
+tickety_main_window_new(tickety *self);
+
+void 
+tickety_message_label_new(tickety *self);
+
+gboolean 
+tickety_message_update_elapsed_time(gpointer data);
+
+void 
+tickety_timer_button_click(GtkWidget *widget, gpointer data);
+
+void 
+tickety_timer_button_new(tickety *self);
+
 #endif	/* _TICKETY_H */
