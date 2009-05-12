@@ -10,3 +10,7 @@ GTK_LIBS = `pkg-config --libs $(PKG_LIBS)`
 
 tickety: tickety.c
 	$(CC) -o tickety tickety.c $(GTK_CFLAGS) $(GTK_LIBS)
+
+clean:
+	rm tickety
+	rm tickety.exe

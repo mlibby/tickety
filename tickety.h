@@ -10,15 +10,18 @@
 #define GTK_STOCK_MEDIA_PLAY_IMAGE gtk_image_new_from_stock(GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_BUTTON)
 
 struct _tickety {
+    GtkWidget *message;
     time_t start_time;
-    GtkWidget *window;
-    GtkWidget *root;
-    GtkWidget *task_frame;
+    GtkEntryCompletion *task_completion;
     GtkWidget *task_entry;
+    GtkWidget *task_frame;
+    GtkListStore *task_model;
     GtkWidget *timer_table;
     GtkWidget *timer_button;
-    GtkWidget *message;
+    GtkWidget *root;
+    GtkWidget *window;
 };
+
 typedef struct _tickety tickety;
 
 void

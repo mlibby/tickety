@@ -1,5 +1,38 @@
 #include "tickety.h"
 
+typedef struct _completion
+{
+    char *task_name;
+} completion;
+
+static completion completions[] = {
+    { "stuff" },
+    { "programming" },
+    { "goofing off" },
+    { "fixing bugs" },
+    { "sitting idle" }
+};
+
+void
+tickety_current_task_completion_new(tickety *self)
+{
+    completion *c;
+    GtkTreeIter iter;
+
+    self->task_completion = gtk_entry_completion_new();
+    self->task_model = gtk_list_store_new(1, G_TYPE_STRING);
+
+    for(c = completions; c && c->task_name; c++)
+    {
+	gtk_list_store_append(self->task_model, &iter);
+	gtk_list_store_set(self->task_model, &iter, 0, c->task_name, -1);
+    }
+
+    gtk_entry_completion_set_text_column(self->task_completion, 0);
+    gtk_entry_set_completion(GTK_ENTRY(self->task_entry), self->task_completion);
+    gtk_entry_completion_set_model(self->task_completion, GTK_TREE_MODEL(self->task_model));
+}
+
 void
 tickety_current_task_new(tickety *self)
 {
@@ -14,7 +47,7 @@ tickety_current_task_new(tickety *self)
     gtk_container_set_border_width(GTK_CONTAINER(task_box), 10);
 
     g_signal_connect(G_OBJECT(self->task_entry), "activate", G_CALLBACK(tickety_current_task_start_callback), self);
-    
+
     gtk_box_pack_start(GTK_BOX(task_box), self->task_entry, TRUE, TRUE, 5);
     gtk_container_add(GTK_CONTAINER(self->task_frame), task_box);
     printf("task new complete\n");
@@ -154,6 +187,7 @@ main(int argc, char *argv[])
     gtk_init(&argc, &argv);
 
     tickety_current_task_new(&self);
+    tickety_current_task_completion_new(&self);
     tickety_message_label_new(&self);
     tickety_timer_button_new(&self);
     tickety_main_window_new(&self);
