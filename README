@@ -1,0 +1,22 @@
+tickety is a simple time tracking tool.
+
+Basically we're talking about a stopwatch here, folks.
+
+You press the big button to get started.
+
+You press the big button again to get stopped.
+
+The results of your efforts are logged.
+
+Planned features:
+
+1. Track time against specific tasks and keep history.
+   a. Single task naming and store in log file
+   b. Recent history of task names
+   c. Tracking tasks across multiple intervals
+
+2. Reminder pop-up and auto-stop.
+   a. Pop up window, "Are you still working on $(TASK)?"
+   b. Assume task is complete if no response
+
+tickety is written in C using the Gtk2 widget library.
