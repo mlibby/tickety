@@ -3,19 +3,21 @@
 void
 tickety_current_task_new(tickety *self)
 {
+    printf("task new\n");
     GtkWidget *task_box;
 
     self->task_frame = gtk_frame_new("I'm working on:");
-    gtk_frame_set_label_align(GTK_FRAME(self->task_frame), 0.5, 0.5);
     self->task_entry = gtk_entry_new_with_max_length(TICKETY_TASK_NAME_MAX_CHARS);
-
     task_box = gtk_hbox_new(FALSE, 0);
+
+    gtk_frame_set_label_align(GTK_FRAME(self->task_frame), 0.5, 0.5);
     gtk_container_set_border_width(GTK_CONTAINER(task_box), 10);
 
     g_signal_connect(G_OBJECT(self->task_entry), "activate", G_CALLBACK(tickety_current_task_start_callback), self);
     
     gtk_box_pack_start(GTK_BOX(task_box), self->task_entry, TRUE, TRUE, 5);
     gtk_container_add(GTK_CONTAINER(self->task_frame), task_box);
+    printf("task new complete\n");
 }
 
 void
@@ -76,18 +78,28 @@ tickety_main_window_destroy(GtkWidget *widget, gpointer data)
 void 
 tickety_main_window_new(tickety *self)
 {
+    printf("window new\n");
     self->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    self->root = gtk_vbox_new(FALSE, 0);
+
     g_signal_connect(G_OBJECT(self->window), "destroy", G_CALLBACK(tickety_main_window_destroy), NULL);
     gtk_container_set_border_width(GTK_CONTAINER(self->window), 10);
 
-    self->root = gtk_vbox_new(FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(self->root), self->task_frame, FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(self->root), self->timer_table, FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(self->root), self->message, TRUE, TRUE, 5);
     gtk_container_add(GTK_CONTAINER(self->window), self->root);
+
+    g_timeout_add(1000, (GSourceFunc)tickety_message_update_elapsed_time, self);
+    printf("window new done\n");
 }
 
 void 
 tickety_message_label_new(tickety *self)
 {
+    printf("message new\n");
     self->message = gtk_label_new("Let's get to work!");
+    printf("message new done\n");
 }
 
 gboolean 
@@ -141,16 +153,10 @@ main(int argc, char *argv[])
     self.start_time = TIME_ZERO;
     gtk_init(&argc, &argv);
 
-    tickety_main_window_new(&self);
     tickety_current_task_new(&self);
     tickety_message_label_new(&self);
     tickety_timer_button_new(&self);
-
-    gtk_box_pack_start(GTK_BOX(self.root), self.task_frame, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(self.root), self.timer_table, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(self.root), self.message, TRUE, TRUE, 5);
-
-    g_timeout_add(1000, (GSourceFunc)tickety_message_update_elapsed_time, &self);
+    tickety_main_window_new(&self);
 
     gtk_widget_show_all(self.window);
     gtk_main();
