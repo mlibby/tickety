@@ -36,7 +36,10 @@ tickety_current_task_completion_new(tickety *self)
 void
 tickety_current_task_new(tickety *self)
 {
+#ifdef DEBUG
     printf("task new\n");
+#endif
+
     GtkWidget *task_box;
 
     self->task_frame = gtk_frame_new("I'm working on:");
@@ -50,7 +53,10 @@ tickety_current_task_new(tickety *self)
 
     gtk_box_pack_start(GTK_BOX(task_box), self->task_entry, TRUE, TRUE, 5);
     gtk_container_add(GTK_CONTAINER(self->task_frame), task_box);
-    printf("task new complete\n");
+
+#ifdef DEBUG
+    printf("task new done\n");
+#endif
 }
 
 void
@@ -111,7 +117,10 @@ tickety_main_window_destroy(GtkWidget *widget, gpointer data)
 void 
 tickety_main_window_new(tickety *self)
 {
+#ifdef DEBUG
     printf("window new\n");
+#endif
+
     self->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     self->root = gtk_vbox_new(FALSE, 0);
 
@@ -124,15 +133,24 @@ tickety_main_window_new(tickety *self)
     gtk_container_add(GTK_CONTAINER(self->window), self->root);
 
     g_timeout_add(1000, (GSourceFunc)tickety_message_update_elapsed_time, self);
+
+#ifdef DEBUG
     printf("window new done\n");
+#endif
 }
 
 void 
 tickety_message_label_new(tickety *self)
 {
+#ifdef DEBUG
     printf("message new\n");
+#endif
+
     self->message = gtk_label_new("Let's get to work!");
+
+#ifdef DEBUG
     printf("message new done\n");
+#endif
 }
 
 gboolean 
