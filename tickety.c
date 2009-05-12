@@ -80,25 +80,27 @@ void tickety_timer_button_click(GtkWidget *widget, gpointer data)
     if(TIME_ZERO == self->start_time)
     {
 	time(&(self->start_time));
-	gtk_button_set_label(GTK_BUTTON(self->timer), "Stop");
-	gtk_button_set_image(GTK_BUTTON(self->timer), GTK_STOCK_MEDIA_STOP_IMAGE);
+	gtk_button_set_label(GTK_BUTTON(self->timer_button), "Stop");
+	gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_STOP_IMAGE);
 	gtk_label_set_text(GTK_LABEL(self->message), "Timer started");
     }
     else
     {
 	tickety_current_task_stop(self);
 	self->start_time = TIME_ZERO;
-	gtk_button_set_label(GTK_BUTTON(self->timer), "Start");
-	gtk_button_set_image(GTK_BUTTON(self->timer), GTK_STOCK_MEDIA_PLAY_IMAGE);
+	gtk_button_set_label(GTK_BUTTON(self->timer_button), "Start");
+	gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_PLAY_IMAGE);
 	gtk_label_set_text(GTK_LABEL(self->message), "Timer stopped");
     }
 }
 
 void tickety_timer_button_new(tickety *self)
 {
-    self->timer = gtk_button_new_with_label("Start");
-    gtk_button_set_image(GTK_BUTTON(self->timer), GTK_STOCK_MEDIA_PLAY_IMAGE);
-    g_signal_connect(G_OBJECT(self->timer), "clicked", G_CALLBACK(tickety_timer_button_click), self);
+    self->timer_table = gtk_table_new(1, 3, TRUE);
+    self->timer_button = gtk_button_new_with_label("Start");
+    gtk_table_attach_defaults(GTK_TABLE(self->timer_table), self->timer_button, 1, 2, 0, 1);
+    gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_PLAY_IMAGE);
+    g_signal_connect(G_OBJECT(self->timer_button), "clicked", G_CALLBACK(tickety_timer_button_click), self);
 }
 
 int main(int argc, char *argv[])
@@ -114,8 +116,8 @@ int main(int argc, char *argv[])
     tickety_timer_button_new(&self);
 
     gtk_box_pack_start(GTK_BOX(self.root), self.task_box, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(self.root), self.timer, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(self.root), self.message, FALSE, TRUE, 5);
+    gtk_box_pack_start(GTK_BOX(self.root), self.timer_table, FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(self.root), self.message, TRUE, TRUE, 5);
 
     g_timeout_add(1000, (GSourceFunc)tickety_message_update_elapsed_time, &self);
 

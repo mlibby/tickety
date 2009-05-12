@@ -15,7 +15,8 @@ struct _tickety {
     GtkWidget *root;
     GtkWidget *task_box;
     GtkWidget *task_entry;
-    GtkWidget *timer;
+    GtkWidget *timer_table;
+    GtkWidget *timer_button;
     GtkWidget *message;
 };
 typedef struct _tickety tickety;
