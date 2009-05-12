@@ -1,6 +1,7 @@
 #include "tickety.h"
 
-void tickety_format_elapsed_time(gchar *elapsed, time_t start_time)
+void
+tickety_format_elapsed_time(gchar *elapsed, time_t start_time)
 {
     time_t now;
     int time_diff;
@@ -14,7 +15,8 @@ void tickety_format_elapsed_time(gchar *elapsed, time_t start_time)
     sprintf(elapsed, "%02d:%02d:%02d", hours, minutes, seconds);
 }
 
-void tickety_current_task_new(tickety *self)
+void
+tickety_current_task_new(tickety *self)
 {
     GtkWidget *task_label;
 
@@ -26,7 +28,8 @@ void tickety_current_task_new(tickety *self)
     gtk_box_pack_start(GTK_BOX(self->task_box), self->task_entry, TRUE, TRUE, 5);
 }
 
-void tickety_current_task_stop(tickety *self)
+void
+tickety_current_task_stop(tickety *self)
 {
     gchar elapsed[25];
     tickety_format_elapsed_time(elapsed, self->start_time);
@@ -35,12 +38,14 @@ void tickety_current_task_stop(tickety *self)
 	   elapsed);
 }
 
-void tickety_main_window_destroy(GtkWidget *widget, gpointer data)
+void 
+tickety_main_window_destroy(GtkWidget *widget, gpointer data)
 {
     gtk_main_quit();
 }
 
-void tickety_main_window_new(tickety *self)
+void 
+tickety_main_window_new(tickety *self)
 {
     self->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     g_signal_connect(G_OBJECT(self->window), "destroy", G_CALLBACK(tickety_main_window_destroy), NULL);
@@ -50,12 +55,14 @@ void tickety_main_window_new(tickety *self)
     gtk_container_add(GTK_CONTAINER(self->window), self->root);
 }
 
-void tickety_message_label_new(tickety *self)
+void 
+tickety_message_label_new(tickety *self)
 {
     self->message = gtk_label_new("Let's get to work!");
 }
 
-gboolean tickety_message_update_elapsed_time(gpointer data)
+gboolean 
+tickety_message_update_elapsed_time(gpointer data)
 {
     gchar elapsed[25];
     gchar msg[255];
@@ -72,7 +79,8 @@ gboolean tickety_message_update_elapsed_time(gpointer data)
     return TRUE;
 }
 
-void tickety_timer_button_click(GtkWidget *widget, gpointer data)
+void 
+tickety_timer_button_click(GtkWidget *widget, gpointer data)
 {
     tickety *self;
     self = (tickety *)data;
@@ -94,7 +102,8 @@ void tickety_timer_button_click(GtkWidget *widget, gpointer data)
     }
 }
 
-void tickety_timer_button_new(tickety *self)
+void 
+tickety_timer_button_new(tickety *self)
 {
     self->timer_table = gtk_table_new(1, 3, TRUE);
     self->timer_button = gtk_button_new_with_label("Start");
@@ -103,7 +112,8 @@ void tickety_timer_button_new(tickety *self)
     g_signal_connect(G_OBJECT(self->timer_button), "clicked", G_CALLBACK(tickety_timer_button_click), self);
 }
 
-int main(int argc, char *argv[])
+int 
+main(int argc, char *argv[])
 {
     tickety self;
     
