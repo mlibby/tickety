@@ -13,7 +13,7 @@ struct _tickety {
     time_t start_time;
     GtkWidget *window;
     GtkWidget *root;
-    GtkWidget *task_box;
+    GtkWidget *task_frame;
     GtkWidget *task_entry;
     GtkWidget *timer_table;
     GtkWidget *timer_button;

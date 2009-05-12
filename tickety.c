@@ -18,14 +18,15 @@ tickety_format_elapsed_time(gchar *elapsed, time_t start_time)
 void
 tickety_current_task_new(tickety *self)
 {
-    GtkWidget *task_label;
+    GtkWidget *task_box;
 
-    self->task_box = gtk_hbox_new(FALSE, 0);
+    self->task_frame = gtk_frame_new("I'm working on:");
+    gtk_frame_set_label_align(GTK_FRAME(self->task_frame), 0.5, 0.5);
+    task_box = gtk_hbox_new(FALSE, 0);
+    gtk_container_set_border_width(GTK_CONTAINER(task_box), 10);
     self->task_entry = gtk_entry_new_with_max_length(TICKETY_TASK_NAME_MAX_CHARS);
-    task_label = gtk_label_new("I'm working on: ");
-    
-    gtk_box_pack_start(GTK_BOX(self->task_box), task_label, FALSE, FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(self->task_box), self->task_entry, TRUE, TRUE, 5);
+    gtk_box_pack_start(GTK_BOX(task_box), self->task_entry, TRUE, TRUE, 5);
+    gtk_container_add(GTK_CONTAINER(self->task_frame), task_box);
 }
 
 void
@@ -125,7 +126,7 @@ main(int argc, char *argv[])
     tickety_message_label_new(&self);
     tickety_timer_button_new(&self);
 
-    gtk_box_pack_start(GTK_BOX(self.root), self.task_box, FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(self.root), self.task_frame, FALSE, FALSE, 5);
     gtk_box_pack_start(GTK_BOX(self.root), self.timer_table, FALSE, FALSE, 5);
     gtk_box_pack_start(GTK_BOX(self.root), self.message, TRUE, TRUE, 5);
 
