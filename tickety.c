@@ -1,5 +1,4 @@
 #include "tickety.h"
-#include "tickety_ui.h"
 
 int 
 main(int argc, char *argv[])
