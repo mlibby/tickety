@@ -2,3 +2,4 @@ tickety
 tickety.exe
 *.o
 *~
+tickety.exe.stackdump

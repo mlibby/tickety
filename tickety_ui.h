@@ -4,13 +4,14 @@
 #include <gtk/gtk.h>
 #include <time.h>
 #include <stdlib.h>
+#include <string.h>
+#include "tickety_common.h"
 
-#define TIME_ZERO 0
-#define TICKETY_TASK_NAME_MAX_CHARS 255
 #define GTK_STOCK_MEDIA_STOP_IMAGE gtk_image_new_from_stock(GTK_STOCK_MEDIA_STOP, GTK_ICON_SIZE_BUTTON)
 #define GTK_STOCK_MEDIA_PLAY_IMAGE gtk_image_new_from_stock(GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_BUTTON)
 
 struct _tickety_ui {
+    char current_task_name[TICKETY_TASK_NAME_MAX_CHARS];
     GtkWidget *message;
     time_t start_time;
     GtkEntryCompletion *task_completion;
@@ -51,6 +52,9 @@ tickety_ui_message_label_new(tickety_ui *self);
 
 gboolean 
 tickety_ui_message_update_elapsed_time(gpointer data);
+
+void
+tickety_ui_task_model_add_task(void *data, char *task_name);
 
 void 
 tickety_ui_timer_button_click(GtkWidget *widget, gpointer data);
