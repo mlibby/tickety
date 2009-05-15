@@ -17,9 +17,6 @@
  *   along with Tickety.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _TICKETY_H
-#define	_TICKETY_H
-
-#include "tickety_ui.h"
-
-#endif	/* _TICKETY_H */
+1. Install gtk development library and all supporting libraries
+2. Install sqlite3 development library
+3. make
