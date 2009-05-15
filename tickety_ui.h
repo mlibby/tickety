@@ -12,7 +12,7 @@
 #define GTK_STOCK_MEDIA_PLAY_IMAGE gtk_image_new_from_stock(GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_BUTTON)
 
 struct _tickety_ui {
-    tickety_task_list *task_list;
+    tickety_task *current_task;
     GtkWidget *message;
     GtkEntryCompletion *task_completion;
     GtkWidget *task_entry;

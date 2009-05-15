@@ -5,7 +5,7 @@ tickety_ui_current_task_completion_new(tickety_ui *self)
 {
     self->task_completion = gtk_entry_completion_new();
     self->task_model = gtk_list_store_new(1, G_TYPE_STRING);
-
+    
     gtk_entry_completion_set_text_column(self->task_completion, 0);
     gtk_entry_set_completion(GTK_ENTRY(self->task_entry), self->task_completion);
     gtk_entry_completion_set_model(self->task_completion, GTK_TREE_MODEL(self->task_model));
@@ -23,7 +23,10 @@ tickety_ui_current_task_new(tickety_ui *self)
     task_box = gtk_hbox_new(FALSE, 0);
     gtk_container_set_border_width(GTK_CONTAINER(task_box), 10);
 
-    g_signal_connect(G_OBJECT(self->task_entry), "activate", G_CALLBACK(tickety_ui_current_task_start_callback), self);
+    g_signal_connect(G_OBJECT(self->task_entry), 
+		     "activate", 
+		     G_CALLBACK(tickety_ui_current_task_start_callback), 
+		     self);
 
     gtk_box_pack_start(GTK_BOX(task_box), self->task_entry, TRUE, TRUE, 5);
     gtk_container_add(GTK_CONTAINER(self->task_frame), task_box);
@@ -32,9 +35,18 @@ tickety_ui_current_task_new(tickety_ui *self)
 void
 tickety_ui_current_task_start(tickety_ui *self)
 {
-    time(&(self->start_time));
-    strcpy(self->current_task_name, gtk_entry_get_text(GTK_ENTRY(self->task_entry)));
-    printf("starting task: '%s'\n", self->current_task_name);
+    time_t start_time;
+
+    if(NULL != self->current_task)
+    {
+	tickety_ui_current_task_stop(self);
+    }
+
+    time(&start_time);
+    self->current_task = tickety_task_new((char *)gtk_entry_get_text(GTK_ENTRY(self->task_entry)),
+					  start_time);
+
+    printf("starting task: '%s'\n", self->current_task->name);
 
     gtk_button_set_label(GTK_BUTTON(self->timer_button), "Stop");
     gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_STOP_IMAGE);
@@ -55,9 +67,13 @@ void
 tickety_ui_current_task_stop(tickety_ui *self)
 {
     gchar elapsed[25];
-    tickety_ui_format_elapsed_time(elapsed, self->start_time);
-    printf("stopping task : '%s' (completed in %s)\n", self->current_task_name, elapsed);
-    self->start_time = TIME_ZERO;
+
+    tickety_ui_format_elapsed_time(elapsed, self->current_task->start_time);
+    printf("stopping task : '%s' (completed in %s)\n", self->current_task->name, elapsed);
+
+    tickety_task_destroy(self->current_task);
+    self->current_task = NULL;
+
     gtk_button_set_label(GTK_BUTTON(self->timer_button), "Start");
     gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_PLAY_IMAGE);
     gtk_label_set_text(GTK_LABEL(self->message), "Timer stopped");
@@ -89,7 +105,10 @@ void
 tickety_ui_main_window_new(tickety_ui *self)
 {
     self->main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    g_signal_connect(G_OBJECT(self->main_window), "destroy", G_CALLBACK(tickety_ui_main_window_destroy), NULL);
+    g_signal_connect(G_OBJECT(self->main_window), 
+		     "destroy",
+		     G_CALLBACK(tickety_ui_main_window_destroy),
+		     NULL);
     gtk_container_set_border_width(GTK_CONTAINER(self->main_window), 10);
 
     self->root = gtk_vbox_new(FALSE, 0);
@@ -110,9 +129,9 @@ tickety_ui_message_update_elapsed_time(gpointer data)
     tickety_ui *self;
 
     self = (tickety_ui *)data;
-    if(TIME_ZERO < self->start_time)
+    if(NULL != self->current_task)
     {
-	tickety_ui_format_elapsed_time(elapsed, self->start_time);
+	tickety_ui_format_elapsed_time(elapsed, self->current_task->start_time);
 	sprintf(msg, "Elapsed: %s", elapsed);
 	gtk_label_set_text(GTK_LABEL(self->message), msg);
     }
@@ -136,7 +155,7 @@ tickety_ui_timer_button_click(GtkWidget *widget, gpointer data)
 {
     tickety_ui *self;
     self = (tickety_ui *)data;
-    if(TIME_ZERO == self->start_time)
+    if(NULL == self->current_task)
     {
 	tickety_ui_current_task_start(self);
     }
@@ -153,7 +172,10 @@ tickety_ui_timer_button_new(tickety_ui *self)
     self->timer_button = gtk_button_new_with_label("Start");
     gtk_table_attach_defaults(GTK_TABLE(self->timer_table), self->timer_button, 1, 2, 0, 1);
     gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_PLAY_IMAGE);
-    g_signal_connect(G_OBJECT(self->timer_button), "clicked", G_CALLBACK(tickety_ui_timer_button_click), self);
+    g_signal_connect(G_OBJECT(self->timer_button),
+		     "clicked", 
+		     G_CALLBACK(tickety_ui_timer_button_click),
+		     self);
 }
 
 tickety_ui 
@@ -161,9 +183,9 @@ tickety_ui
 {
     tickety_ui *self;
     self = (tickety_ui *)malloc(sizeof(tickety_ui));
-   
-    self->start_time = TIME_ZERO;
 
+    self->current_task = NULL;
+   
     tickety_ui_main_window_new(self);
     tickety_ui_current_task_new(self);
     tickety_ui_current_task_completion_new(self);

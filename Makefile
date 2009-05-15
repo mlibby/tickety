@@ -9,8 +9,9 @@ GTK_LIBS = `pkg-config --libs $(PKG_LIBS)`
 
 all: tickety
 
-tickety: tickety_task.o tickety_file.o tickety_ui.o tickety.h
-	$(CC) -o tickety tickety.c tickety_ui.o tickety_file.o $(CFLAGS) $(GTK_FLAGS) $(GTK_LIBS)
+tickety: tickety_task.o tickety_file.o tickety_task.o tickety_ui.o tickety.h
+	$(CC) -o tickety tickety.c tickety_task.o tickety_ui.o tickety_file.o \
+	$(CFLAGS) $(GTK_FLAGS) $(GTK_LIBS)
 
 tickety_ui.o: tickety_task.o tickety_ui.h tickety_ui.h tickety_common.h
 	$(CC) -c tickety_ui.c $(CFLAGS) $(GTK_FLAGS)
