@@ -1,2 +1,6 @@
+#ifndef _TICKETY_COMMON_H
+#define _TICKETY_COMMON_H
+
 #define TIME_ZERO 0
-#define TICKETY_TASK_NAME_MAX_CHARS 255
+
+#endif /* _TICKETY_COMMON_H */

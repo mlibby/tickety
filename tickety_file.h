@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tickety_common.h"
+#include "tickety_task.h"
 
 #define TICKETY_FILE_SUCCESS_READING_TASK_FILE 0
 #define TICKETY_FILE_ERROR_READING_TASK_FILE 1

@@ -1,0 +1,6 @@
+#ifndef _TICKETY_TASK_H
+#define _TICKETY_TASK_H
+
+#define TICKETY_TASK_NAME_MAX_CHARS 255
+
+#endif /* _TICKETY_TASK_H */

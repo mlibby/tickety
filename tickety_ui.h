@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tickety_common.h"
+#include "tickety_task.h"
 
 #define GTK_STOCK_MEDIA_STOP_IMAGE gtk_image_new_from_stock(GTK_STOCK_MEDIA_STOP, GTK_ICON_SIZE_BUTTON)
 #define GTK_STOCK_MEDIA_PLAY_IMAGE gtk_image_new_from_stock(GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_BUTTON)
