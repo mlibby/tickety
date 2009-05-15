@@ -12,9 +12,8 @@
 #define GTK_STOCK_MEDIA_PLAY_IMAGE gtk_image_new_from_stock(GTK_STOCK_MEDIA_PLAY, GTK_ICON_SIZE_BUTTON)
 
 struct _tickety_ui {
-    char current_task_name[TICKETY_TASK_NAME_MAX_CHARS];
+    tickety_task_list *task_list;
     GtkWidget *message;
-    time_t start_time;
     GtkEntryCompletion *task_completion;
     GtkWidget *task_entry;
     GtkWidget *task_frame;
