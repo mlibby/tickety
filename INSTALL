@@ -27,5 +27,9 @@
    
    You can preload some auto-complete task names if you want:
 
-   INSERT tasks VALUES (0, 'programming', 0, 0);
-   INSERT tasks VALUES (NULL, 'surfing the web', 0, 0);
+   INSERT INTO tasks VALUES (0, 'programming', 0, 0);
+   INSERT INTO tasks VALUES (NULL, 'surfing the web', 0, 0);
+
+   When done:
+
+   .exit
