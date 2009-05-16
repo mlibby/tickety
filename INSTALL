@@ -20,3 +20,12 @@
 1. Install gtk development library and all supporting libraries
 2. Install sqlite3 development library
 3. make
+4. Setup a sqlite3 database file in the same directory as tickety:
+
+   sqlite3 tasks.db
+   CREATE TABLE tasks (task_id integer primary key, name varchar(255), start_time integer, stop_time integer);
+   
+   You can preload some auto-complete task names if you want:
+
+   INSERT tasks VALUES (0, 'programming', 0, 0);
+   INSERT tasks VALUES (NULL, 'surfing the web', 0, 0);

@@ -17,19 +17,23 @@
  *   along with Tickety.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _TICKETY_FILE_H
-#define	_TICKETY_FILE_H
+#ifndef _TICKETY_DATA_H
+#define	_TICKETY_DATA_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <sqlite3.h>
+
 #include "tickety_common.h"
 #include "tickety_task.h"
 
-#define TICKETY_FILE_SUCCESS_READING_TASK_FILE 0
-#define TICKETY_FILE_ERROR_READING_TASK_FILE 1
+#define TICKETY_DATA_SUCCESS_READING_TASK_FILE 0
+#define TICKETY_DATA_ERROR_READING_TASK_FILE 1
+#define TICKETY_DATA_FILE_NAME "tasks.db"
 
 int
-tickety_file_read_task_file(void (*callback)(void*, char*), void *data);
+tickety_data_read_task_names(void (*callback)(void*, char*), void *data);
 
-#endif	/* _TICKETY_FILE_H */
+#endif	/* _TICKETY_DATA_H */

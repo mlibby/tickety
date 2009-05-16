@@ -3,3 +3,4 @@ tickety.exe
 *.o
 *~
 tickety.exe.stackdump
+tasks.db

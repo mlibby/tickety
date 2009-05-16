@@ -20,6 +20,7 @@
 #ifndef _TICKETY_H
 #define	_TICKETY_H
 
+#include "tickety_data.h"
 #include "tickety_ui.h"
 
 #endif	/* _TICKETY_H */
