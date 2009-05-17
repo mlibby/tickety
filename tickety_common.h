@@ -20,6 +20,10 @@
 #ifndef _TICKETY_COMMON_H
 #define _TICKETY_COMMON_H
 
-#define TIME_ZERO 0
+#include <stdio.h>
+#include <time.h>
+
+void
+tickety_format_elapsed_time(char *elapsed, time_t start_time, time_t stop_time);
 
 #endif /* _TICKETY_COMMON_H */

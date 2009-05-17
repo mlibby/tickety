@@ -54,18 +54,14 @@ tickety_ui_current_task_new(tickety_ui *self)
 void
 tickety_ui_current_task_start(tickety_ui *self)
 {
-    time_t start_time;
 
     if(NULL != self->current_task)
     {
 	tickety_ui_current_task_stop(self);
     }
 
-    time(&start_time);
-    self->current_task = tickety_task_new((char *)gtk_entry_get_text(GTK_ENTRY(self->task_entry)),
-					  start_time);
-
-    printf("starting task: '%s'\n", self->current_task->name);
+    self->current_task = tickety_task_new((char *)gtk_entry_get_text(GTK_ENTRY(self->task_entry)));
+    tickety_task_start(self->current_task);
 
     gtk_button_set_label(GTK_BUTTON(self->timer_button), "Stop");
     gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_STOP_IMAGE);
@@ -85,11 +81,7 @@ tickety_ui_current_task_start_callback(GtkWidget *widget, gpointer data)
 void
 tickety_ui_current_task_stop(tickety_ui *self)
 {
-    gchar elapsed[25];
-
-    tickety_ui_format_elapsed_time(elapsed, self->current_task->start_time);
-    printf("stopping task : '%s' (completed in %s)\n", self->current_task->name, elapsed);
-
+    tickety_task_stop(self->current_task);
     tickety_task_destroy(self->current_task);
     self->current_task = NULL;
 
@@ -97,21 +89,6 @@ tickety_ui_current_task_stop(tickety_ui *self)
     gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_PLAY_IMAGE);
     gtk_label_set_text(GTK_LABEL(self->message), "Timer stopped");
     gtk_widget_grab_focus(self->task_entry);
-}
-
-void
-tickety_ui_format_elapsed_time(gchar *elapsed, time_t start_time)
-{
-    time_t now;
-    int time_diff;
-    int hours;
-    int minutes;
-    int seconds;
-    time_diff = (int)(time(&now) - start_time);
-    hours = time_diff / 3600;
-    minutes = (time_diff - hours * 3600) / 60;
-    seconds = time_diff - hours * 3600 - minutes * 60;
-    sprintf(elapsed, "%02d:%02d:%02d", hours, minutes, seconds);
 }
 
 void 
@@ -143,14 +120,16 @@ tickety_ui_message_label_new(tickety_ui *self)
 gboolean 
 tickety_ui_message_update_elapsed_time(gpointer data)
 {
-    gchar elapsed[25];
+    char elapsed[25];
     gchar msg[255];
+    time_t now;
     tickety_ui *self;
 
     self = (tickety_ui *)data;
     if(NULL != self->current_task)
     {
-	tickety_ui_format_elapsed_time(elapsed, self->current_task->start_time);
+	time(&now);
+	tickety_format_elapsed_time(elapsed, self->current_task->start_time, now);
 	sprintf(msg, "Elapsed: %s", elapsed);
 	gtk_label_set_text(GTK_LABEL(self->message), msg);
     }

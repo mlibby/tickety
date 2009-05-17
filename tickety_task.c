@@ -25,8 +25,25 @@ tickety_task_destroy(tickety_task *self)
     free(self);
 }
 
+void
+tickety_task_start(tickety_task *self)
+{
+    time(&(self->start_time));
+    printf("starting task: '%s'\n", self->name);
+}
+
+void
+tickety_task_stop(tickety_task *self)
+{
+    char elapsed[25];
+
+    time(&(self->stop_time));
+    tickety_format_elapsed_time(elapsed, self->start_time, self->stop_time);
+    printf("stopping task : '%s' (completed in %s)\n", self->name, elapsed);
+}
+
 tickety_task 
-*tickety_task_new(char *name, time_t start_time)
+*tickety_task_new(char *name)
 {
     tickety_task *self;
 
@@ -34,7 +51,8 @@ tickety_task
     if(NULL != self)
     {
 	strcpy(self->name, name);
-	self->start_time = start_time;
+	self->start_time = 0;
+	self->stop_time = 0;
 	return self;
     }
     return NULL;

@@ -57,9 +57,6 @@ tickety_ui_current_task_start_callback(GtkWidget *widget, gpointer data);
 void
 tickety_ui_current_task_stop(tickety_ui *self);
 
-void
-tickety_ui_format_elapsed_time(gchar *elapsed, time_t start_time);
-
 void 
 tickety_ui_main_window_destroy(GtkWidget *widget, gpointer data);
 

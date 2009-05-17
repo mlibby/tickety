@@ -26,18 +26,21 @@ GTK_LIBS = `pkg-config --libs $(PKG_LIBS)`
 
 all: tickety
 
-tickety: tickety_task.o tickety_data.o tickety_task.o tickety_ui.o tickety.h
-	$(CC) -o tickety tickety.c tickety_task.o tickety_ui.o tickety_data.o \
+tickety: tickety_task.o tickety_data.o tickety_task.o tickety_ui.o tickety_common.o tickety.h 
+	$(CC) -o tickety tickety.c tickety_task.o tickety_ui.o tickety_data.o tickety_common.o \
 	$(CFLAGS) $(GTK_FLAGS) $(GTK_LIBS)
 
-tickety_ui.o: tickety_task.o tickety_ui.h tickety_ui.h tickety_common.h
+tickety_ui.o: tickety_task.o tickety_ui.h tickety_ui.h tickety_common.o
 	$(CC) -c tickety_ui.c $(CFLAGS) $(GTK_FLAGS)
 
-tickety_data.o: tickety_task.o tickety_data.h tickety_common.h
+tickety_data.o: tickety_task.o tickety_data.h tickety_common.o
 	$(CC) -c tickety_data.c $(CFLAGS)
 
-tickety_task.o: tickety_task.h tickety_common.h
+tickety_task.o: tickety_task.h tickety_common.o
 	$(CC) -c tickety_task.c $(CFLAGS)
+
+tickety_common.o: tickety_common.h
+	$(CC) -c tickety_common.c $(CFLAGS)
 
 clean:
 	rm -f tickety tickety.exe
