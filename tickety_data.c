@@ -33,6 +33,40 @@ process_task_names(void *data, int column_count, char **column_values, char **co
     return 0;
 }
 
+void
+tickety_data_insert_task(tickety_task *task)
+{
+    sqlite3 *db;
+    char sql_cmd[512];
+    char *err_msg = 0;
+    int rc;
+
+    printf("insert task: '%s' (%lu-%lu)\n",
+	   task->name, 
+	   (unsigned long int)task->start_time, 
+	   (unsigned long int)task->stop_time);
+
+    rc = sqlite3_open(TICKETY_DATA_FILE_NAME, &db);
+    if(rc){
+	fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+	sqlite3_close(db);
+    }
+
+    sprintf(sql_cmd,
+	    "INSERT INTO tasks VALUES (NULL, '%s', %lu, %lu)",
+	    task->name,
+	    (unsigned long int)task->start_time,
+	    (unsigned long int)task->stop_time);
+
+    rc = sqlite3_exec(db, sql_cmd, NULL, NULL, &err_msg);
+    if(rc != SQLITE_OK){
+	fprintf(stderr, "SQL error: %s\n", err_msg);
+	sqlite3_free(err_msg);
+    }
+    sqlite3_close(db);
+}
+
+
 int
 tickety_data_read_task_names(void (*callback)(void*, char*), void *object)
 {

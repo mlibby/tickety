@@ -33,6 +33,9 @@
 #define TICKETY_DATA_ERROR_READING_TASK_FILE 1
 #define TICKETY_DATA_FILE_NAME "tasks.db"
 
+void
+tickety_data_insert_task(tickety_task *task);
+
 int
 tickety_data_read_task_names(void (*callback)(void*, char*), void *data);
 

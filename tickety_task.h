@@ -45,6 +45,9 @@ void
 tickety_task_destroy(tickety_task *self);
 
 void
+tickety_task_set_stop_callback(void (*callback)(tickety_task *task));
+
+void
 tickety_task_start(tickety_task *self);
 
 void

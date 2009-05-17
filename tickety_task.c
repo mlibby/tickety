@@ -19,10 +19,18 @@
 
 #include "tickety_task.h"
 
+static void (*stop_callback)(tickety_task *task) = NULL;
+
 void
 tickety_task_destroy(tickety_task *self)
 {
     free(self);
+}
+
+void
+tickety_task_set_stop_callback(void (*callback)(tickety_task *task))
+{
+    stop_callback = callback;
 }
 
 void
@@ -39,7 +47,8 @@ tickety_task_stop(tickety_task *self)
 
     time(&(self->stop_time));
     tickety_format_elapsed_time(elapsed, self->start_time, self->stop_time);
-    printf("stopping task : '%s' (completed in %s)\n", self->name, elapsed);
+    printf("stopping task: '%s' (completed in %s)\n", self->name, elapsed);
+    stop_callback(self);
 }
 
 tickety_task 

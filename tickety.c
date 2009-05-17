@@ -30,6 +30,8 @@ main(int argc, char *argv[])
     tui = tickety_ui_new();
     result = tickety_data_read_task_names(&tickety_ui_task_model_add_task, tui);
 
+    tickety_task_set_stop_callback(&tickety_data_insert_task);
+
     if(TICKETY_DATA_SUCCESS_READING_TASK_FILE == result)
     {
 	gtk_widget_show_all(tui->main_window);
