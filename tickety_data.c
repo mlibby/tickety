@@ -15,15 +15,49 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with Tickety.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "tickety_data.h"
+
 
 struct _task_names_callback {
     void (*callback)(void*, char*);
     void *object;
 };
 typedef struct _task_names_callback task_names_callback;
+
+
+static sqlite3 *db;
+
+
+int
+execute_sql(char *sql_cmd, int (*callback)(void*, int, char**, char**), void *data)
+{
+    char *err_msg = 0;
+    int result;
+
+    if(NULL == db)
+    {
+	result = sqlite3_open(TICKETY_DATA_FILE_NAME, &db);
+	if(result)
+	{
+	    fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+	    sqlite3_close(db);
+	    return TICKETY_DATA_ERROR;
+	}
+    }
+
+    result = sqlite3_exec(db, sql_cmd, callback, data, &err_msg);
+    if(result != SQLITE_OK)
+    {
+	fprintf(stderr, "SQL error: %s\n", err_msg);
+	sqlite3_free(err_msg);
+	return TICKETY_DATA_ERROR;
+    }
+
+    /* sqlite3_close(db); */
+    return TICKETY_DATA_SUCCESS;
+}
 
 static int
 process_task_names(void *data, int column_count, char **column_values, char **column_names){
@@ -33,69 +67,80 @@ process_task_names(void *data, int column_count, char **column_values, char **co
     return 0;
 }
 
-void
+
+int
+tickety_data_get_task_names(void (*callback)(void*, char*), void *object)
+{
+    int result;
+    task_names_callback *names_callback;
+
+    names_callback = malloc(sizeof(task_names_callback));
+    /* TODO: check that malloc worked */
+    names_callback->callback = callback;
+    names_callback->object = object;
+
+    result = execute_sql("SELECT DISTINCT name FROM tasks", process_task_names, names_callback);
+
+    free(names_callback);
+
+    return result;
+}
+
+int
 tickety_data_insert_task(tickety_task *task)
 {
-    sqlite3 *db;
+    int result;
     char sql_cmd[512];
-    char *err_msg = 0;
-    int rc;
 
     printf("insert task: '%s' (%lu-%lu)\n",
 	   task->name, 
 	   (unsigned long int)task->start_time, 
 	   (unsigned long int)task->stop_time);
-
-    rc = sqlite3_open(TICKETY_DATA_FILE_NAME, &db);
-    if(rc){
-	fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-	sqlite3_close(db);
+    
+    if(0 == task->stop_time)
+    {
+	sprintf(sql_cmd,
+		"INSERT INTO tasks VALUES (NULL, '%s', %lu, NULL)",
+		task->name,
+		(unsigned long int)task->start_time);
+    }
+    else
+    {
+	sprintf(sql_cmd,
+		"INSERT INTO tasks VALUES (NULL, '%s', %lu, %lu)",
+		task->name,
+		(unsigned long int)task->start_time,
+		(unsigned long int)task->stop_time);
+    }
+    
+    result = execute_sql(sql_cmd, NULL, NULL);
+    if(TICKETY_DATA_SUCCESS == result)
+    {
+	task->task_id = (long)sqlite3_last_insert_rowid(db);
     }
 
-    sprintf(sql_cmd,
-	    "INSERT INTO tasks VALUES (NULL, '%s', %lu, %lu)",
-	    task->name,
-	    (unsigned long int)task->start_time,
-	    (unsigned long int)task->stop_time);
-
-    rc = sqlite3_exec(db, sql_cmd, NULL, NULL, &err_msg);
-    if(rc != SQLITE_OK){
-	fprintf(stderr, "SQL error: %s\n", err_msg);
-	sqlite3_free(err_msg);
-    }
-    sqlite3_close(db);
+    return result;
 }
 
 
 int
-tickety_data_read_task_names(void (*callback)(void*, char*), void *object)
+tickety_data_update_task(tickety_task *task)
 {
-    sqlite3 *db;
-    char *err_msg = 0;
-    int rc;
-    task_names_callback *names_callback;
+    int result;
+    char sql_cmd[512];
 
-    names_callback = malloc(sizeof(task_names_callback));
-    /* TODO: check that malloc worked */
+    printf("update task: '%s' (%lu-%lu)\n",
+	   task->name, 
+	   (unsigned long int)task->start_time, 
+	   (unsigned long int)task->stop_time);
 
-    names_callback->callback = callback;
-    names_callback->object = object;
+    sprintf(sql_cmd,
+	    "UPDATE tasks SET stop_time = %lu WHERE task_id = %ld",
+	    (unsigned long int)task->stop_time,
+	    task->task_id);
 
-    rc = sqlite3_open(TICKETY_DATA_FILE_NAME, &db);
-    if(rc){
-	fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-	sqlite3_close(db);
-	return TICKETY_DATA_ERROR_READING_TASK_FILE;
-    }
+    result = execute_sql(sql_cmd, NULL, NULL);
 
-    rc = sqlite3_exec(db, "SELECT DISTINCT name FROM tasks", process_task_names, names_callback, &err_msg);
-    if(rc != SQLITE_OK){
-	fprintf(stderr, "SQL error: %s\n", err_msg);
-	sqlite3_free(err_msg);
-	return TICKETY_DATA_ERROR_READING_TASK_FILE;
-    }
-
-    free(names_callback);
-    sqlite3_close(db);
-    return TICKETY_DATA_SUCCESS_READING_TASK_FILE;
+    return result;
 }
+

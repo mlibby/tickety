@@ -19,7 +19,8 @@
 
 #include "tickety_task.h"
 
-static void (*stop_callback)(tickety_task *task) = NULL;
+static int (*stop_callback)(tickety_task *task) = NULL;
+static int (*start_callback)(tickety_task *task) = NULL;
 
 void
 tickety_task_destroy(tickety_task *self)
@@ -28,7 +29,13 @@ tickety_task_destroy(tickety_task *self)
 }
 
 void
-tickety_task_set_stop_callback(void (*callback)(tickety_task *task))
+tickety_task_set_start_callback(int (*callback)(tickety_task *task))
+{
+    start_callback = callback;
+}
+
+void
+tickety_task_set_stop_callback(int (*callback)(tickety_task *task))
 {
     stop_callback = callback;
 }
@@ -38,6 +45,8 @@ tickety_task_start(tickety_task *self)
 {
     time(&(self->start_time));
     printf("starting task: '%s'\n", self->name);
+    start_callback(self);
+    printf("task assigned id: %ld\n", self->task_id);
 }
 
 void

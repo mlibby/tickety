@@ -29,14 +29,17 @@
 #include "tickety_common.h"
 #include "tickety_task.h"
 
-#define TICKETY_DATA_SUCCESS_READING_TASK_FILE 0
-#define TICKETY_DATA_ERROR_READING_TASK_FILE 1
+#define TICKETY_DATA_SUCCESS 0
+#define TICKETY_DATA_ERROR 1
 #define TICKETY_DATA_FILE_NAME "tasks.db"
 
-void
+int
+tickety_data_get_task_names(void (*callback)(void*, char*), void *data);
+
+int
 tickety_data_insert_task(tickety_task *task);
 
 int
-tickety_data_read_task_names(void (*callback)(void*, char*), void *data);
+tickety_data_update_task(tickety_task *task);
 
 #endif	/* _TICKETY_DATA_H */

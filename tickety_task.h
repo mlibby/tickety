@@ -35,6 +35,7 @@
 */
 
 struct _tickety_task {
+    long task_id;
     char name[TICKETY_TASK_NAME_MAX_CHARS];
     time_t start_time;
     time_t stop_time;
@@ -45,7 +46,10 @@ void
 tickety_task_destroy(tickety_task *self);
 
 void
-tickety_task_set_stop_callback(void (*callback)(tickety_task *task));
+tickety_task_set_start_callback(int (*callback)(tickety_task *task));
+
+void
+tickety_task_set_stop_callback(int (*callback)(tickety_task *task));
 
 void
 tickety_task_start(tickety_task *self);
