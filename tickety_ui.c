@@ -94,6 +94,10 @@ tickety_ui_current_task_stop(tickety_ui *self)
 void 
 tickety_ui_main_window_destroy(GtkWidget *widget, gpointer data)
 {
+    tickety_ui *self;
+    self = (tickety_ui *)data;
+    tickety_task_stop(self->current_task);
+
     gtk_main_quit();
 }
 
@@ -104,7 +108,7 @@ tickety_ui_main_window_new(tickety_ui *self)
     g_signal_connect(G_OBJECT(self->main_window), 
 		     "destroy",
 		     G_CALLBACK(tickety_ui_main_window_destroy),
-		     NULL);
+		     self);
     gtk_container_set_border_width(GTK_CONTAINER(self->main_window), 10);
 
     self->root = gtk_vbox_new(FALSE, 0);
