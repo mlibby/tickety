@@ -4,3 +4,6 @@ tickety.exe
 *~
 tickety.exe.stackdump
 tasks.db
+.dep.inc
+nbproject/*
+tickety-Makefile.mk

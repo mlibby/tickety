@@ -15,7 +15,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with Tickety.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "tickety_ui.h"
 
@@ -24,7 +24,7 @@ tickety_ui_current_task_completion_new(tickety_ui *self)
 {
     self->task_completion = gtk_entry_completion_new();
     self->task_model = gtk_list_store_new(1, G_TYPE_STRING);
-    
+
     gtk_entry_completion_set_text_column(self->task_completion, 0);
     gtk_entry_set_completion(GTK_ENTRY(self->task_entry), self->task_completion);
     gtk_entry_completion_set_model(self->task_completion, GTK_TREE_MODEL(self->task_model));
@@ -42,10 +42,10 @@ tickety_ui_current_task_new(tickety_ui *self)
     task_box = gtk_hbox_new(FALSE, 0);
     gtk_container_set_border_width(GTK_CONTAINER(task_box), 10);
 
-    g_signal_connect(G_OBJECT(self->task_entry), 
-		     "activate", 
-		     G_CALLBACK(tickety_ui_current_task_start_callback), 
-		     self);
+    g_signal_connect(G_OBJECT(self->task_entry),
+                     "activate",
+                     G_CALLBACK(tickety_ui_current_task_start_callback),
+                     self);
 
     gtk_box_pack_start(GTK_BOX(task_box), self->task_entry, TRUE, TRUE, 5);
     gtk_container_add(GTK_CONTAINER(self->task_frame), task_box);
@@ -57,7 +57,7 @@ tickety_ui_current_task_start(tickety_ui *self)
 
     if(NULL != self->current_task)
     {
-	tickety_ui_current_task_stop(self);
+        tickety_ui_current_task_stop(self);
     }
 
     self->current_task = tickety_task_new((char *)gtk_entry_get_text(GTK_ENTRY(self->task_entry)));
@@ -70,7 +70,7 @@ tickety_ui_current_task_start(tickety_ui *self)
     gtk_widget_grab_focus(self->timer_button);
 }
 
-void 
+void
 tickety_ui_current_task_start_callback(GtkWidget *widget, gpointer data)
 {
     tickety_ui *self;
@@ -91,37 +91,39 @@ tickety_ui_current_task_stop(tickety_ui *self)
     gtk_widget_grab_focus(self->task_entry);
 }
 
-void 
+void
 tickety_ui_main_window_destroy(GtkWidget *widget, gpointer data)
 {
     tickety_ui *self;
     self = (tickety_ui *)data;
-    tickety_task_stop(self->current_task);
-
+    if(NULL != self->current_task)
+    {
+        tickety_task_stop(self->current_task);
+    }
     gtk_main_quit();
 }
 
-void 
+void
 tickety_ui_main_window_new(tickety_ui *self)
 {
     self->main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    g_signal_connect(G_OBJECT(self->main_window), 
-		     "destroy",
-		     G_CALLBACK(tickety_ui_main_window_destroy),
-		     self);
+    g_signal_connect(G_OBJECT(self->main_window),
+                     "destroy",
+                     G_CALLBACK(tickety_ui_main_window_destroy),
+                     self);
     gtk_container_set_border_width(GTK_CONTAINER(self->main_window), 10);
 
     self->root = gtk_vbox_new(FALSE, 0);
     gtk_container_add(GTK_CONTAINER(self->main_window), self->root);
 }
 
-void 
+void
 tickety_ui_message_label_new(tickety_ui *self)
 {
     self->message = gtk_label_new("Let's get to work!");
 }
 
-gboolean 
+gboolean
 tickety_ui_message_update_elapsed_time(gpointer data)
 {
     char elapsed[25];
@@ -132,12 +134,12 @@ tickety_ui_message_update_elapsed_time(gpointer data)
     self = (tickety_ui *)data;
     if(NULL != self->current_task)
     {
-	time(&now);
-	tickety_format_elapsed_time(elapsed, self->current_task->start_time, now);
-	sprintf(msg, "Elapsed: %s", elapsed);
-	gtk_label_set_text(GTK_LABEL(self->message), msg);
+        time(&now);
+        tickety_format_elapsed_time(elapsed, self->current_task->start_time, now);
+        sprintf(msg, "Elapsed: %s", elapsed);
+        gtk_label_set_text(GTK_LABEL(self->message), msg);
     }
- 
+
     return TRUE;
 }
 
@@ -152,22 +154,22 @@ tickety_ui_task_model_add_task(void *data, char *task_name)
     gtk_list_store_set(self->task_model, &iter, 0, task_name, -1);
 }
 
-void 
+void
 tickety_ui_timer_button_click(GtkWidget *widget, gpointer data)
 {
     tickety_ui *self;
     self = (tickety_ui *)data;
     if(NULL == self->current_task)
     {
-	tickety_ui_current_task_start(self);
+        tickety_ui_current_task_start(self);
     }
     else
     {
-	tickety_ui_current_task_stop(self);
+        tickety_ui_current_task_stop(self);
     }
 }
 
-void 
+void
 tickety_ui_timer_button_new(tickety_ui *self)
 {
     self->timer_table = gtk_table_new(1, 3, TRUE);
@@ -175,19 +177,19 @@ tickety_ui_timer_button_new(tickety_ui *self)
     gtk_table_attach_defaults(GTK_TABLE(self->timer_table), self->timer_button, 1, 2, 0, 1);
     gtk_button_set_image(GTK_BUTTON(self->timer_button), GTK_STOCK_MEDIA_PLAY_IMAGE);
     g_signal_connect(G_OBJECT(self->timer_button),
-		     "clicked", 
-		     G_CALLBACK(tickety_ui_timer_button_click),
-		     self);
+                     "clicked",
+                     G_CALLBACK(tickety_ui_timer_button_click),
+                     self);
 }
 
-tickety_ui 
-*tickety_ui_new() 
+tickety_ui
+*tickety_ui_new()
 {
     tickety_ui *self;
     self = (tickety_ui *)malloc(sizeof(tickety_ui));
 
     self->current_task = NULL;
-   
+
     tickety_ui_main_window_new(self);
     tickety_ui_current_task_new(self);
     tickety_ui_current_task_completion_new(self);
