@@ -5,5 +5,5 @@ tickety.exe
 tickety.exe.stackdump
 tasks.db
 .dep.inc
-nbproject/*
+nbproject/private/*
 tickety-Makefile.mk

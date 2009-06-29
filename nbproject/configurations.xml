@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="51">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="tickety" displayName="tickety" projectFiles="true">
+      <itemPath>tickety.c</itemPath>
+      <itemPath>tickety.h</itemPath>
+      <itemPath>tickety_common.c</itemPath>
+      <itemPath>tickety_common.h</itemPath>
+      <itemPath>tickety_data.c</itemPath>
+      <itemPath>tickety_data.h</itemPath>
+      <itemPath>tickety_task.c</itemPath>
+      <itemPath>tickety_task.h</itemPath>
+      <itemPath>tickety_ui.c</itemPath>
+      <itemPath>tickety_ui.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+      <itemPath>tickety-Makefile.mk</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>tickety-Makefile.mk</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>make -f Makefile</buildCommand>
+          <cleanCommand>make -f Makefile clean</cleanCommand>
+          <executablePath></executablePath>
+        </makeTool>
+        <requiredProjects>
+        </requiredProjects>
+      </makefileType>
+      <item path="tickety.c">
+        <itemTool>0</itemTool>
+      </item>
+      <item path="tickety.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="tickety_common.c">
+        <itemTool>0</itemTool>
+      </item>
+      <item path="tickety_common.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="tickety_data.c">
+        <itemTool>0</itemTool>
+      </item>
+      <item path="tickety_data.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="tickety_task.c">
+        <itemTool>0</itemTool>
+      </item>
+      <item path="tickety_task.h">
+        <itemTool>3</itemTool>
+      </item>
+      <item path="tickety_ui.c">
+        <itemTool>0</itemTool>
+      </item>
+      <item path="tickety_ui.h">
+        <itemTool>3</itemTool>
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
