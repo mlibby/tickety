@@ -15,11 +15,11 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with Tickety.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "tickety.h"
 
-int 
+int
 main(int argc, char *argv[])
 {
     tickety_ui *tui;
@@ -36,8 +36,8 @@ main(int argc, char *argv[])
 
     if(TICKETY_DATA_SUCCESS == result)
     {
-	gtk_widget_show_all(tui->main_window);
-	gtk_main();
+        gtk_widget_show_all(tui->main_window);
+        gtk_main();
     }
 
     return 0;
